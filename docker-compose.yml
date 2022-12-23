@@ -10,24 +10,30 @@ services:
       - 5163:5163
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DB_HOST=db
+      - DB_NAME=prac-hris
+      - DB_PASSWORD=P@ssw0rd
     volumes:
       - ./backend:/src
     networks:
       - prac-hris
-  # sql:
-  #   image: 'mcr.microsoft.com/mssql/server:2022-latest'
-  #   container_name: sql_server2022
-  #   ports: # not actually needed, because the two services are on the same network
-  #     - '1433:1433'
-  #   volumes:
-  #     - ./data:/var/opt/mssql/data
-  #     - ./log:/var/opt/mssql/log
-  #     - ./secrets:/var/opt/mssql/secrets
-  #   environment:
-  #     - ACCEPT_EULA=y
-  #     - SA_PASSWORD=A&VeryComplex123Password
-  #   networks:
-  #     - prac-hris
+    depends_on:
+      - db
+  db:
+    image: 'mcr.microsoft.com/mssql/server:2022-latest'
+    user: root
+    ports:
+      - '1433:1433'
+    restart: always
+    volumes:
+      - ./data:/var/opt/mssql/data
+      - ./log:/var/opt/mssql/log
+      - ./secrets:/var/opt/mssql/secrets
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=P@ssw0rd
+    networks:
+      - prac-hris
 networks:
   prac-hris:
     driver: bridge
