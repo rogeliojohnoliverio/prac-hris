@@ -11,7 +11,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
-      - ./backend:/app
+      - ./backend:/src
     networks:
       - prac-hris
   # sql:
