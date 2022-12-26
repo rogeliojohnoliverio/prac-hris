@@ -2,23 +2,33 @@ version: '3.9'
 
 services:
   backend:
-    restart: always
     build:
       context: ./backend
-      dockerfile: Dockerfile
     ports:
       - 5163:5163
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DB_HOST=db
-      - DB_NAME=prac-hris
-      - DB_PASSWORD=P@ssw0rd
+    env_file:
+      - .env.backend
     volumes:
       - ./backend:/src
     networks:
       - prac-hris
     depends_on:
       - db
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.frontend
+    networks:
+      - prac-hris
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
   db:
     image: 'mcr.microsoft.com/mssql/server:2022-latest'
     user: root
